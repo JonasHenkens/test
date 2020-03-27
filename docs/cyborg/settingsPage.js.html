@@ -75,9 +75,9 @@
  * @namespace
  */
 var SettingsPage = {
-    /**TODO */
+    /**TODO: documentation */
     inputClass: 'redderke-settings-input',
-    /**TODO */
+    /**TODO: documentation */
     KeyAttributeName: 'redderke-key',
     _defaultOptions: {
         type: 'checkbox',
@@ -90,14 +90,17 @@ var SettingsPage = {
         style: '',
     },
 
-    /**TODO */
-    init: function () {
+    /**
+     * TODO: documentation
+     * @private
+     */
+    _init: function () {
         console.log('settings loaded')
         this._initUI();
     },
 
     /**
-     * TODO
+     * TODO: documentation
      * @private
      */
     _initUI: function () {
@@ -109,20 +112,20 @@ var SettingsPage = {
     },
 
     /**
-     * TODO
+     * TODO: documentation
      * @private
      */
     _getSettingElement: function(){
         //TODO
     },
 
-    /**TODO */
+    /**TODO: documentation */
     addEventListener: function(){
         //TODO
     },
 
     /**
-     * TODO
+     * TODO: documentation
      * @private
      */
     _getCategoryTable: function(category){
@@ -205,7 +208,7 @@ var SettingsPage = {
         }
     },
 
-    /**TODO */
+    /**TODO: documentation */
     addCategory: function (category, text) {
         var optionsDiv = document.getElementById(Constants.IdOptionsDiv)
         if (optionsDiv.querySelector('table[category="' + category + '"]') === null) {
@@ -214,7 +217,7 @@ var SettingsPage = {
     },
 
     /**
-     * TODO
+     * TODO: documentation
      * @private
      */
     _generateRowElement: function(options){
@@ -250,7 +253,7 @@ var SettingsPage = {
     },
 
 }
-SettingsPage.init();</pre>
+SettingsPage._init();</pre>
     </article>
 </section>
 

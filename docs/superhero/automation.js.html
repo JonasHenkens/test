@@ -80,30 +80,40 @@
 var Automation = {
 
     /**
-     * TODO
+     * TODO: documentation
      * @private
      */
     _initialPlaytime: playtime,
 
-    /**TODO */
-    init: function () {
+    /**
+     * TODO: documentation
+     * @private
+     */
+    _init: function () {
         console.log('automation init')
         GeneralFunctions.runOnFirstTick(()=> {
             this._initSettings();
-            console.log('automation initfirst tick')
+            console.log('automation init first tick')
          });
     },
 
     /**
-     * TODO
+     * TODO: documentation
      * @private
      */
     _initSettings: function () {
         SettingsPage.addCategory('Automation', 'Automation')
     },
 
-    /**TODO */
-    automateControlled: function (delayKey, enableKey, func, delayMultiplier = 1000) {
+    /**
+     * Run a function periodically and control it's execution and delay.
+     * The delay is in milliseconds.
+     * @param {string} delayKey - The DataAccess key that contains delay amount.
+     * @param {string} enableKey - The DataAccess key that contains a true/false to control execution.
+     * @param {function} func - The function to run periodically.
+     * @param {int} [delayMultiplier=1] - The delay stored at the key location will be multiplied by this value.
+     */
+    automateControlled: function (delayKey, enableKey, func, delayMultiplier = 1) {
         if (DataAccess.get(enableKey)) {
             func();
         }
@@ -113,7 +123,11 @@ var Automation = {
 
     },
 
-    /**TODO */
+    /**
+     * Run a function periodically.
+     * @param {int} delay - Delay between executions.
+     * @param {function} func - The function to run periodically.
+     */
     automate: function (delay, func) {
         func();
         setTimeout(function () {
@@ -122,7 +136,7 @@ var Automation = {
 
     }
 }
-Automation.init();</pre>
+Automation._init();</pre>
     </article>
 </section>
 

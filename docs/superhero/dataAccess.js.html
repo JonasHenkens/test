@@ -78,27 +78,38 @@ var DataAccess = {
 
     _history_data_raw: null,
     _history_data: {},
-    /**TODO */
+    /** True if the history data is being downloaded */
     history_data_downloading: false,
-    /**TODO */
-    localStoragePrefix: 'redderke.',
+    _localStoragePrefix: 'redderke.',
 
-    /**TODO */
-    init: function () {
-        let clearlist = this.get('DataAccessClearList')
-        clearlist.forEach((x)=>{
+    /**
+     * TODO: documentation
+     * @private
+     */
+    _init: function () {
+        let clearList = this.get('DataAccessClearList')
+        clearList.forEach((x)=>{
             DataAccess.clear(x)
         })
+        this.clear('DataAccessClearList')
     },
 
-    /**TODO */
+    /**
+     * Store data at the key.
+     * @param {string} key - The key where data is stored.
+     * @param {any} value - The value stored at the key.
+     */
     set: function (key, value) {
-        localStorage.setItem(this.localStoragePrefix + key, JSON.stringify(value));
+        localStorage.setItem(this._localStoragePrefix + key, JSON.stringify(value));
     },
 
-    /**TODO */
+    /**
+     * Retrieve data stored at the key.
+     * @param {string} key - The key where data is stored.
+     * @return {any} - The data stored at the key.
+     */
     get: function (key) {
-        let localData = JSON.parse(localStorage.getItem(this.localStoragePrefix + key));
+        let localData = JSON.parse(localStorage.getItem(this._localStoragePrefix + key));
         if (localData !== null) {
             return localData
         } else {
@@ -106,28 +117,40 @@ var DataAccess = {
         }
     },
 
-    /**TODO */
+    /**
+     * Clear the data stored at the key.
+     * @param {string} key - The key.
+     */
     clear: function (key) {
         localStorage.removeItem(key);
     },
 
-    /**TODO */
+    /**
+     * Clear all stored data.
+     */
     clearAll: function () {
         for (var key in localStorage) {
-            if (key.startsWith(this.localStoragePrefix)) {
+            if (key.startsWith(this._localStoragePrefix)) {
                 localStorage.removeItem(key);
             }
         }
     },
 
-    /**TODO */
+    /**
+     * Will remove data stored at the key on next load of the page.
+     * @param {string} key - The key.
+     */
     clearOnReload: function (key) {
-        let clearlist = this.get('DataAccessClearList')
-        clearlist.push(key);
-        this.set('DataAccessClearList', clearlist)
+        let clearList = this.get('DataAccessClearList')
+        clearList.push(key);
+        this.set('DataAccessClearList', clearList)
     },
 
-    /**TODO */
+    /**
+     * Returns the string id linked to the number id.
+     * @param {int} id - The id in number format.
+     * @return {string} - The id in string format.
+     */
     getStrIdById: function (id) {
         for (const key in Constants.itemList) {
             if (Constants.itemList.hasOwnProperty(key) &amp;&amp; Constants.itemList[key][0] == id) {
@@ -136,7 +159,11 @@ var DataAccess = {
         }
     },
 
-    /**TODO */
+    /**
+     * Returns the string id that uses this name.
+     * @param {string} name - The name.
+     * @return {string} - The id in string format.
+     */
     getStrIdByName: function (name) {
         for (const key in Constants.itemList) {
             if (Constants.itemList.hasOwnProperty(key) &amp;&amp; Constants.itemList[key][1] == name) {
@@ -145,7 +172,12 @@ var DataAccess = {
         }
     },
 
-    /**TODO */
+    /**
+     * Executes a api get call and executes the function with the XMLHttpRequest object as parameter.
+     * @param {string} url - The url.
+     * @param {function} onload - The function to run on load.
+     * @return {XMLHttpRequest} - The XMLHttpRequest object.
+     */
     getApi: function (url, onload) {
         if (!url.startsWith('https')) {
             url = DataAccess.get('corsApiUrl') + url;
@@ -161,7 +193,16 @@ var DataAccess = {
         return xhr;
     },
 
-    /**TODO */
+    // TODO: This function depends on a module
+    // solution: move the local option to main
+    // TODO: make the pai url configurable
+    // TODO: use onload exclusively for consistency
+    /**
+     * Gets the history data from localStorage or api depending on key:MHVLocal
+     * @param {string} url - The url.
+     * @param {function} onload - The function to run on load.
+     * @return {unknown} - TODO: documentation.
+     */
     getHistory: function (strId, onload = (() => { })) {
         if (DataAccess.get('MHVLocal')) {
             return this.get('MHVHistoryData')[strId];
@@ -180,7 +221,13 @@ var DataAccess = {
         return this._history_data[strId];
     },
 
-    /**TODO */
+    // TODO: remove?
+    // TODO: use onload exclusively for consistency
+    /**
+     * Gets the latest known prices from history data.
+     * @param {function} onload - The function to run on load.
+     * @return {XMLHttpRequest} - The XMLHttpRequest object.
+     */
     getLastPrices: function (onload = (() => { })) {
         let lastPriceList = {}
         this.getHistory(Constants.marketList[0], onload)
@@ -195,7 +242,7 @@ var DataAccess = {
     },
 
     /**
-     * TODO
+     * TODO: documentation
      * @private
      */
     _generateHistoryCache: function (strId) {
@@ -215,7 +262,8 @@ var DataAccess = {
             }
         }
     },
-}</pre>
+}
+DataAccess._init();</pre>
     </article>
 </section>
 

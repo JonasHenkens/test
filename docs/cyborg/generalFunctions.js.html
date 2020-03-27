@@ -82,8 +82,11 @@ var GeneralFunctions = {
     _marketTableAll: null,
     _marketTableShown: null,
 
-    /**TODO */
-    init: function () {
+    /**
+     * TODO: documentation
+     * @private
+     */
+    _init: function () {
         console.log('general functions init')
         this._waitForFirstTick();
 
@@ -110,7 +113,7 @@ var GeneralFunctions = {
     },
 
     /**
-     * TODO
+     * TODO: documentation
      * @private
      */
     _initMarketTable: function () {
@@ -120,7 +123,7 @@ var GeneralFunctions = {
     },
 
     // market table the user sees
-    /**TODO */
+    /**TODO: documentation */
     getMarketTable: function () {
         if (this._marketTableShown != null) {
             this._marketTableShown;
@@ -130,7 +133,7 @@ var GeneralFunctions = {
     },
 
     // market table that updates only when all is updated
-    /**TODO */
+    /**TODO: documentation */
     getMarketTableAll: function () {
         if (this._marketTableAll != null) {
             this._marketTableAll;
@@ -139,7 +142,7 @@ var GeneralFunctions = {
         }
     },
 
-    /**TODO */
+    /**TODO: documentation */
     addCss: function(fileName) {
 
         var head = document.head;
@@ -152,7 +155,7 @@ var GeneralFunctions = {
         head.appendChild(link);
     },
 
-    /**TODO */
+    /**TODO: documentation */
     setMarketPage: function (strId, options) {
         console.log('changed to '+strId)
         var buySellElement = document.getElementById("dialogue-market-postitem-buyorsell")
@@ -161,12 +164,12 @@ var GeneralFunctions = {
         window.postItemDialogue(buySellElement, strId, inputElement, options)
     },
 
-    /**TODO */
+    /**TODO: documentation */
     runOnMarketupdate: function (func, items = ['ALL']) {
         this._runOnMarketupdateList.push([func, items]);
     },
 
-    /**TODO */
+    /**TODO: documentation */
     runOnFirstTick: function (func) {
        if (this._ranFirstTick) {
           func();
@@ -186,7 +189,7 @@ var GeneralFunctions = {
        }
     },
 
-    /**TODO */
+    /**TODO: documentation */
     updateHistoryData: function (onload) {
         if (!this.history_data_downloading) {
             this.history_data_downloading = true;
@@ -199,7 +202,7 @@ var GeneralFunctions = {
         }
     },
 }
-GeneralFunctions.init();
+GeneralFunctions._init();
 </pre>
     </article>
 </section>

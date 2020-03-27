@@ -158,7 +158,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".automate"><span class="type-signature">&lt;static> </span>automate()</h4>
+    <h4 class="name" id=".automate"><span class="type-signature">&lt;static> </span>automate(delay, func)</h4>
     
     
 </dt>
@@ -166,7 +166,7 @@
 
     
     <div class="description">
-        <p>TODO</p>
+        <p>Run a function periodically.</p>
     </div>
     
 
@@ -175,6 +175,80 @@
     
 
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>delay</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Delay between executions.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>func</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The function to run periodically.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
     
 
     
@@ -213,7 +287,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="automation.js.html">automation.js</a>,
-				 <a href="automation.js.html#sunlight-1-line-45">line 45</a>
+				 <a href="automation.js.html#sunlight-1-line-59">line 59</a>
 			</li>
 		</ul>
 	</dd>
@@ -246,7 +320,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".automateControlled"><span class="type-signature">&lt;static> </span>automateControlled()</h4>
+    <h4 class="name" id=".automateControlled"><span class="type-signature">&lt;static> </span>automateControlled(delayKey, enableKey, func [, delayMultiplier])</h4>
     
     
 </dt>
@@ -254,7 +328,8 @@
 
     
     <div class="description">
-        <p>TODO</p>
+        <p>Run a function periodically and control it's execution and delay.<br>
+The delay is in milliseconds.</p>
     </div>
     
 
@@ -264,93 +339,183 @@
 
     
     
+        <h5>Parameters:</h5>
+        
 
-    
-<dl class="details">
-    
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
 
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="automation.js.html">automation.js</a>,
-				 <a href="automation.js.html#sunlight-1-line-34">line 34</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
+        <th>Type</th>
 
         
+        <th>Argument</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
             
-<hr>
-<dt>
-    <h4 class="name" id=".init"><span class="type-signature">&lt;static> </span>init()</h4>
-    
-    
-</dt>
-<dd>
+                <td class="name"><code>delayKey</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>The DataAccess key that contains delay amount.</p></td>
+        </tr>
 
     
-    <div class="description">
-        <p>TODO</p>
-    </div>
-    
+
+        <tr>
+            
+                <td class="name"><code>enableKey</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>The DataAccess key that contains a true/false to control execution.</p></td>
+        </tr>
 
     
 
-    
+        <tr>
+            
+                <td class="name"><code>func</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>The function to run periodically.</p></td>
+        </tr>
 
     
+
+        <tr>
+            
+                <td class="name"><code>delayMultiplier</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+
+            <td class="description last"><p>The delay stored at the key location will be multiplied by this value.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
     
 
     
@@ -389,7 +554,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="automation.js.html">automation.js</a>,
-				 <a href="automation.js.html#sunlight-1-line-17">line 17</a>
+				 <a href="automation.js.html#sunlight-1-line-44">line 44</a>
 			</li>
 		</ul>
 	</dd>
