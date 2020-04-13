@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>DH2 Source: base/generalFunctions.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.superhero.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">DH2</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Automation.html">Automation</a></li><li><a href="Constants.html">Constants</a></li><li><a href="DataAccess.html">DataAccess</a></li><li><a href="Dev.html">Dev</a></li><li><a href="Dialog.html">Dialog</a></li><li><a href="GeneralFunctions.html">GeneralFunctions</a></li><li><a href="Main.html">Main</a></li><li><a href="MarketUI.html">MarketUI</a></li><li><a href="Namespace.html">Namespace</a></li><li><a href="Notifications.html">Notifications</a></li><li><a href="Settings.html">Settings</a></li><li><a href="Test.html">Test</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+			
+
+		<h1 class="page-title">Source: base/generalFunctions.js</h1>
+    
+<section>
+    <article>
+        <pre
+            class="sunlight-highlight-javascript linenums">/**
+ * General functions.
+ * @namespace
+ */
+var GeneralFunctions = {
+    namespace: 'GeneralFunctions',
+    _CTE: null,
+    _DA: null,
+    _SETTINGS: null,
+
+    _runOnMarketUpdateList: [],
+    //TODO: Move to Main
+    _runOnFirstTickList: [],
+    _initialPlaytime: playtime,
+    //TODO: Move to Main
+    _ranFirstTick: false,
+
+    /**
+     * TODO: documentation
+     */
+    init: function () {
+        this._CTE = Main.getModule('Constants');
+        this._DA = Main.getModule('DataAccess');
+        this._SETTINGS = Main.getModule('Settings');
+
+        this._waitForFirstTick();
+
+        // TODO: convert oncommand
+        // replace original function that updates the market with new one
+        let previousFunc = window.postItemDialogue;
+        window.postItemDialogue = function (buySellElement, strId, inputElement, options) {
+            Main.getModule('GeneralFunctions')._runOnMarketUpdateList.forEach(item => {
+                if (item[0].includes(strId)) {
+                    item[1](buySellElement, strId, inputElement, options);
+                }
+            });
+            previousFunc(buySellElement, strId, inputElement);
+        }
+        this._initSettings();
+
+        this.runOnFirstTick(() => {
+            this._checkNotificationPermission();
+        });
+    },
+
+    _initSettings: function () {
+        this._SETTINGS.addCategory('generalFunctions', 'General')
+
+        this._SETTINGS.addSetting({
+            category: 'generalFunctions',
+            key: 'generalFunctions-allow-push-notifications',
+            type: 'checkbox',
+            text: 'Enable push notifications',
+            defaultValue: false,
+            onChange: function () { Main.getModule('GeneralFunctions')._checkNotificationPermission() },
+        })
+    },
+
+    /**TODO: documentation */
+    addCss: function (fileName) {
+
+        var head = document.head;
+        var link = document.createElement("link");
+
+        link.type = "text/css";
+        link.rel = "stylesheet";
+        link.href = fileName;
+
+        head.appendChild(link);
+    },
+
+    /**TODO: documentation */
+    setMarketPage: function (strId, options) {
+        console.log('changed to ' + strId)
+        var buySellElement = document.getElementById("dialogue-market-postitem-buyorsell")
+        buySellElement.setAttribute('value', 'buy')
+        var inputElement = document.querySelector('#dialogue-market-items-area input[data-item-name="' + this._CTE.itemList[strId][1] + '"]')
+        window.postItemDialogue(buySellElement, strId, inputElement, options)
+    },
+
+    /**TODO: documentation */
+    runOnMarketUpdate: function (func, items = ['ALL']) {
+        this._runOnMarketUpdateList.push([func, items]);
+    },
+
+    //TODO: Move to Main
+    /**TODO: documentation */
+    runOnFirstTick: function (func) {
+        if (this._ranFirstTick) {
+            func();
+        } else {
+            this._runOnFirstTickList.push(func);
+        }
+    },
+
+    //TODO: Move to Main
+    _waitForFirstTick: function () {
+        if (this._initialPlaytime == playtime) {
+            setTimeout(function () { Main.getModule('GeneralFunctions')._waitForFirstTick() }, 1000);
+        } else if (!this._ranFirstTick) {
+            this._ranFirstTick = true;
+            this._runOnFirstTickList.forEach(func => {
+                func();
+            });
+        }
+    },
+
+    // TODO leave here or move to market history viewer?
+    /**TODO: documentation */
+    updateHistoryData: function (onload) {
+        if (!this.history_data_downloading) {
+            this.history_data_downloading = true;
+            this._history_data = {};
+            this._DA.getApi(this._DA.get('marketHistoryUrl'), x => {
+                this._DA._history_data_raw = JSON.parse(x.responseText);
+                this._DA.history_data_downloading = false;
+                onload();
+            });
+        }
+    },
+
+    /**TODO: documentation */
+    deepCopy: function (object) {
+        return jQuery.extend(true, {}, object)
+    },
+
+    /**TODO: documentation */
+    shallowCopy: function (object) {
+        return jQuery.extend({}, object)
+    },
+
+    //TODO: make prepend and append options?
+    /**
+     * Add functionality to a function. (use window as container to extend global functions)
+     * @param {object} container - TODO: documentation
+     * @param {string} funcName - TODO: documentation
+     * @param {function} append - TODO: documentation
+     * @param {function} prepend - TODO: documentation
+     */
+    extendFunction: function (container, funcName, append, prepend) {
+        (function () {
+            let proxied = container[funcName];
+            container[funcName] = function () {
+                if (prepend) prepend.apply(this, arguments);
+                let result = proxied.apply(this, arguments);
+                if (append) append.apply(this, arguments);
+                return result;
+            };
+        })();
+    },
+
+    /**
+     * Send a desktop notification.
+     * @param {string} title - Title of the notification.
+     * @param {string} body - Body of the notification.
+     * @param {string} [iconUrl=''] - Url to icon image of notification.
+     * @return {boolean} - True if successful.
+     */
+    sendNotification: function (title, body, iconUrl = '') {
+        if (!window.Notification) {
+            console.info('Browser does not support notifications.');
+            return false;
+        } else {
+            if (Notification.permission === 'granted' &amp;&amp; Main.getModule('DataAccess').get('generalFunctions-allow-push-notifications')) {
+                new Notification(title, {
+                    body: body,
+                    icon: iconUrl,
+                });
+            }
+        }
+    },
+
+    _checkNotificationPermission: function () {
+        if (Notification.permission !== 'granted' &amp;&amp; this._DA.get('generalFunctions-allow-push-notifications')) {
+            Notification.requestPermission().then(function (p) {
+                if (p === 'granted') {
+                    console.info('Notifications allowed')
+                } else {
+                    console.info('Notifications blocked')
+                }
+            }).catch(function (err) {
+                console.error(err);
+            });
+        }
+    }
+}
+Main.addModule(GeneralFunctions);
+</pre>
+    </article>
+</section>
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
+</div>
+
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a>
+	
+		on Tue Apr 7th 2020
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
+
+</body>
+</html>

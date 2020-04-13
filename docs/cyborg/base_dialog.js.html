@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>DH2 Source: base/dialog.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.cyborg.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">DH2</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Automation.html">Automation</a></li><li><a href="Constants.html">Constants</a></li><li><a href="DataAccess.html">DataAccess</a></li><li><a href="Dev.html">Dev</a></li><li><a href="Dialog.html">Dialog</a></li><li><a href="GeneralFunctions.html">GeneralFunctions</a></li><li><a href="Main.html">Main</a></li><li><a href="MarketUI.html">MarketUI</a></li><li><a href="Namespace.html">Namespace</a></li><li><a href="Notifications.html">Notifications</a></li><li><a href="Settings.html">Settings</a></li><li><a href="Test.html">Test</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+			
+
+		<h1 class="page-title">Source: base/dialog.js</h1>
+    
+<section>
+    <article>
+        <pre
+            class="sunlight-highlight-javascript linenums">/**
+ * Description.
+ * @namespace
+ */
+var Dialog = {
+    namespace: 'Dialog', // the name used by other modules
+    // add/remove as needed
+    _CTE: null,
+    _DA: null,
+    _GEN: null,
+    _AUTO: null,
+    _SETTINGS: null,
+    _prefixId: 'redderke-dialog-',
+    _prefixLocal: 'redderke-dialog-',
+    _titles: {},
+
+    /**
+     * Initialize Dialog
+     */
+    init: function () {
+        this._CTE = Main.getModule('Constants');
+        this._DA = Main.getModule('DataAccess');
+        this._GEN = Main.getModule('GeneralFunctions');
+        this._AUTO = Main.getModule('Automation');
+        this._SETTINGS = Main.getModule('Settings');
+    },
+
+    /**
+     * TODO Documentation
+     * html is string
+     */
+    create: function (id, title, html) {
+        this.setTitle(id, title)
+
+        let dialog = document.createElement('dialog');
+        dialog.id = this._prefixId + id;
+        dialog.insertAdjacentHTML('beforeend', '&lt;div style="margin-right: 20px;">&lt;/div>');
+        document.body.appendChild(dialog);
+
+        this.setHTML(id, html);
+
+        new ResizeObserver(() => {
+            dialog.getAttribute('style').replace(/\s/g, '')
+                .split(';').forEach(x => {
+                    var t = x.split(':');
+                    if (t[0] == 'width' &amp;&amp; t[1] != 'auto') {
+                        this._DA.set(this._prefixLocal + '.' + id + '.width', parseFloat(t[1].replace('px', '')) + 60);
+                    }
+                    if (t[0] == 'height' &amp;&amp; t[1] != 'auto') {
+                        this._DA.set(this._prefixLocal + '.' + id + '.height', parseFloat(t[1].replace('px', '')) + 60);
+                    }
+                });
+        }).observe(dialog);
+    },
+
+    /**
+     * TODO Documentation
+     * html is string
+     */
+    setHTML: function (id, html) {
+        document.querySelector('#' +this._prefixId + id + ' div').innerHTML = html;
+    },
+
+    /**
+     * TODO Documentation
+     */
+    setTitle: function (id, title) {
+        this._titles[id] = title;
+    },
+
+    /**
+     * TODO Documentation
+     */
+    open: function (id) {
+        let height = this._DA.get(this._prefixLocal + '.' + id + '.height')
+        let width = this._DA.get(this._prefixLocal + '.' + id + '.width')
+        $('#' + this._prefixId + id).dialog({
+            title: this._titles[id],
+            height: height,
+            width: width,
+        });
+    },
+
+    /**
+     * TODO Documentation
+     * @return The body div of the dialog
+     */
+    getElement: function (id) {
+        return document.querySelector('#' +this._prefixId + id + ' div');
+    },
+    
+
+    
+}
+Main.addModule(Dialog);</pre>
+    </article>
+</section>
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
+</div>
+
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a>
+	
+		on Tue Apr 7th 2020
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
+
+</body>
+</html>

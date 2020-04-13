@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>DH2 Source: base/dataAccess.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.superhero.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">DH2</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Automation.html">Automation</a></li><li><a href="Constants.html">Constants</a></li><li><a href="DataAccess.html">DataAccess</a></li><li><a href="Dev.html">Dev</a></li><li><a href="Dialog.html">Dialog</a></li><li><a href="GeneralFunctions.html">GeneralFunctions</a></li><li><a href="Main.html">Main</a></li><li><a href="MarketUI.html">MarketUI</a></li><li><a href="Namespace.html">Namespace</a></li><li><a href="Notifications.html">Notifications</a></li><li><a href="Settings.html">Settings</a></li><li><a href="Test.html">Test</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+			
+
+		<h1 class="page-title">Source: base/dataAccess.js</h1>
+    
+<section>
+    <article>
+        <pre
+            class="sunlight-highlight-javascript linenums">/**
+ * DataAccess.
+ * @namespace
+ */
+var DataAccess = {
+    namespace: 'DataAccess',
+    _CTE: null,
+    _GEN: null,
+
+    _history_data_raw: null,
+    _history_data: {},
+    /** True if the history data is being downloaded */
+    history_data_downloading: false,
+    _localStoragePrefix: 'redderke.',
+
+    /**
+     * TODO: documentation
+     */
+    init: function () {
+        this._CTE = Main.getModule('Constants');
+        this._GEN = Main.getModule('GeneralFunctions');
+        
+        let clearList = this.get('DataAccessClearList')
+        if (clearList != null) {
+            clearList.forEach((x) => {
+                this.clear(x)
+            })
+        }
+        this.clear('DataAccessClearList')
+    },
+
+    /**
+     * Store data at the key.
+     * @param {string} key - The key where data is stored.
+     * @param {any} value - The value stored at the key.
+     */
+    set: function (key, value) {
+        localStorage.setItem(this._localStoragePrefix + key, JSON.stringify(value));
+    },
+
+    /**
+     * Retrieve data stored at the key.
+     * @param {string} key - The key where data is stored.
+     * @return {any} - The data stored at the key.
+     */
+    get: function (key) {
+        let localData = JSON.parse(localStorage.getItem(this._localStoragePrefix + key));
+        if (localData !== null) {
+            return localData
+        } else {
+            return typeof this._CTE.defaultValues[key] === 'undefined' ? null : this._CTE.defaultValues[key]
+        }
+    },
+
+    /**
+     * Clear the data stored at the key.
+     * @param {string} key - The key.
+     */
+    clear: function (key) {
+        localStorage.removeItem(key);
+    },
+
+    /**
+     * Clear all stored data.
+     */
+    clearAll: function () {
+        for (var key in localStorage) {
+            if (key.startsWith(this._localStoragePrefix)) {
+                localStorage.removeItem(key);
+            }
+        }
+    },
+
+    /**
+     * Will remove data stored at the key on next load of the page.
+     * @param {string} key - The key.
+     */
+    clearOnReload: function (key) {
+        let clearList = this.get('DataAccessClearList')
+        clearList.push(key);
+        this.set('DataAccessClearList', clearList)
+    },
+
+    /**
+     * Returns the string id linked to the number id.
+     * @param {int} id - The id in number format.
+     * @return {string} - The id in string format.
+     */
+    getStrIdById: function (id) {
+        for (const key in this._CTE.itemList) {
+            if (this._CTE.itemList.hasOwnProperty(key) &amp;&amp; this._CTE.itemList[key][0] == id) {
+                return key;
+            }
+        }
+    },
+
+    /**
+     * Returns the string id that uses this name.
+     * @param {string} name - The name.
+     * @return {string} - The id in string format.
+     */
+    getStrIdByName: function (name) {
+        for (const key in this._CTE.itemList) {
+            if (this._CTE.itemList.hasOwnProperty(key) &amp;&amp; this._CTE.itemList[key][1] == name) {
+                return key;
+            }
+        }
+    },
+
+    /**
+     * TODO make async
+     * Executes a api get call and executes the function with the XMLHttpRequest object as parameter.
+     * @param {string} url - The url.
+     * @param {function} onload - The function to run on load.
+     * @return {XMLHttpRequest} - The XMLHttpRequest object.
+     */
+    getApi: function (url, onload) {
+        if (!url.startsWith('https')) {
+            url = this.get('corsApiUrl') + url;
+        }
+
+        var xhr = new XMLHttpRequest();
+        xhr.addEventListener("progress", () => console.log('progress'), false);
+        xhr.addEventListener("load", () => onload(xhr), false);
+        //xhr.addEventListener("error", transferFailed, false);
+        //xhr.addEventListener("abort", transferCanceled, false);
+        xhr.open('GET', url);
+        xhr.send();
+        return xhr;
+    },
+
+    // TODO: This function depends on a module
+    // solution: move the local option to main
+    // TODO: make the pai url configurable
+    // TODO: use onload exclusively for consistency
+    /**
+     * Gets the history data from localStorage or api depending on key:MHVLocal
+     * @param {string} url - The url.
+     * @param {function} onload - The function to run on load.
+     * @return {unknown} - TODO: documentation.
+     */
+    getHistory: function (strId, onload = (() => { })) {
+        if (this.get('MHVLocal')) {
+            return this.get('MHVHistoryData')[strId];
+        } else {
+            if (typeof this._history_data[strId] === 'undefined') {
+                if (this._history_data_raw === null) {
+                    this._GEN.updateHistoryData(() => {
+                        this._generateHistoryCache(strId);
+                        onload()
+                    });
+                } else {
+                    this._generateHistoryCache(strId);
+                }
+            }
+        }
+        return this._history_data[strId];
+    },
+
+    // TODO: remove?
+    // TODO: use onload exclusively for consistency
+    /**
+     * Gets the latest known prices from history data.
+     * @param {function} onload - The function to run on load.
+     * @return {XMLHttpRequest} - The XMLHttpRequest object.
+     */
+    getLastPrices: function (onload = (() => { })) {
+        let lastPriceList = {}
+        this.getHistory(this._CTE.marketList[0], onload)
+
+        this._CTE.marketList.forEach(strId => {
+            const priceList = this.getHistory(strId);
+            if (typeof priceList !== 'undefined') {
+                lastPriceList[strId] = priceList[priceList.length - 1]
+            }
+        });
+        return lastPriceList;
+    },
+
+    /**
+     * TODO: documentation
+     * @private
+     */
+    _generateHistoryCache: function (strId) {
+        this._history_data[strId] = [];
+        for (var key in this._history_data_raw) {
+            if (this._history_data_raw.hasOwnProperty(key)) {
+                var entry = this._history_data_raw[key];
+                if (typeof entry !== 'undefined' &amp;&amp; entry[0] == strId) {
+                    this._history_data[strId].push(
+                        [
+                            entry[1],
+                            entry[2],
+                            Date.parse(entry[3] + ' CST')
+                        ]
+                    );
+                }
+            }
+        }
+    },
+}
+Main.addModule(DataAccess);</pre>
+    </article>
+</section>
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
+</div>
+
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a>
+	
+		on Tue Apr 7th 2020
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
+
+</body>
+</html>
