@@ -158,7 +158,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".addCss"><span class="type-signature">&lt;static> </span>addCss()</h4>
+    <h4 class="name" id=".addCss"><span class="type-signature">&lt;static> </span>addCss(cssUrl)</h4>
     
     
 </dt>
@@ -166,7 +166,7 @@
 
     
     <div class="description">
-        <p>TODO: documentation</p>
+        <p>Add css to the page</p>
     </div>
     
 
@@ -176,93 +176,55 @@
 
     
     
+        <h5>Parameters:</h5>
+        
 
-    
-<dl class="details">
-    
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
 
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="base_generalFunctions.js.html">base/generalFunctions.js</a>,
-				 <a href="base_generalFunctions.js.html#sunlight-1-line-60">line 60</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
+        <th>Type</th>
 
         
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
             
-<hr>
-<dt>
-    <h4 class="name" id=".deepCopy"><span class="type-signature">&lt;static> </span>deepCopy()</h4>
-    
-    
-</dt>
-<dd>
+                <td class="name"><code>cssUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The url to the css file.</p></td>
+        </tr>
 
     
-    <div class="description">
-        <p>TODO: documentation</p>
-    </div>
-    
+    </tbody>
+</table>
 
-    
-
-    
-
-    
     
 
     
@@ -301,7 +263,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="base_generalFunctions.js.html">base/generalFunctions.js</a>,
-				 <a href="base_generalFunctions.js.html#sunlight-1-line-123">line 123</a>
+				 <a href="base_generalFunctions.js.html#sunlight-1-line-63">line 63</a>
 			</li>
 		</ul>
 	</dd>
@@ -511,7 +473,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="base_generalFunctions.js.html">base/generalFunctions.js</a>,
-				 <a href="base_generalFunctions.js.html#sunlight-1-line-140">line 140</a>
+				 <a href="base_generalFunctions.js.html#sunlight-1-line-146">line 146</a>
 			</li>
 		</ul>
 	</dd>
@@ -552,7 +514,7 @@
 
     
     <div class="description">
-        <p>TODO: documentation</p>
+        <p>Initialize GeneralFunctions</p>
     </div>
     
 
@@ -640,7 +602,7 @@
 
     
     <div class="description">
-        <p>TODO: documentation</p>
+        <p>Runs the function on the first game tick (after logon).</p>
     </div>
     
 
@@ -687,7 +649,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="base_generalFunctions.js.html">base/generalFunctions.js</a>,
-				 <a href="base_generalFunctions.js.html#sunlight-1-line-88">line 88</a>
+				 <a href="base_generalFunctions.js.html#sunlight-1-line-104">line 104</a>
 			</li>
 		</ul>
 	</dd>
@@ -720,7 +682,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".runOnMarketUpdate"><span class="type-signature">&lt;static> </span>runOnMarketUpdate()</h4>
+    <h4 class="name" id=".runOnMarketUpdate"><span class="type-signature">&lt;static> </span>runOnMarketUpdate(func, items)</h4>
     
     
 </dt>
@@ -728,7 +690,7 @@
 
     
     <div class="description">
-        <p>TODO: documentation</p>
+        <p>The given function will be ran when the market updates.</p>
     </div>
     
 
@@ -737,6 +699,80 @@
     
 
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>func</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The function.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>items</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>An array of strings. The function will be run if any of these items have been updated.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
     
 
     
@@ -775,7 +811,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="base_generalFunctions.js.html">base/generalFunctions.js</a>,
-				 <a href="base_generalFunctions.js.html#sunlight-1-line-82">line 82</a>
+				 <a href="base_generalFunctions.js.html#sunlight-1-line-96">line 96</a>
 			</li>
 		</ul>
 	</dd>
@@ -1005,7 +1041,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="base_generalFunctions.js.html">base/generalFunctions.js</a>,
-				 <a href="base_generalFunctions.js.html#sunlight-1-line-159">line 159</a>
+				 <a href="base_generalFunctions.js.html#sunlight-1-line-165">line 165</a>
 			</li>
 		</ul>
 	</dd>
@@ -1064,7 +1100,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".setMarketPage"><span class="type-signature">&lt;static> </span>setMarketPage()</h4>
+    <h4 class="name" id=".setMarketPage"><span class="type-signature">&lt;static> </span>setMarketPage(strId, options)</h4>
     
     
 </dt>
@@ -1072,7 +1108,7 @@
 
     
     <div class="description">
-        <p>TODO: documentation</p>
+        <p>Set the market page to a new item.</p>
     </div>
     
 
@@ -1082,93 +1118,79 @@
 
     
     
+        <h5>Parameters:</h5>
+        
 
-    
-<dl class="details">
-    
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
 
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="base_generalFunctions.js.html">base/generalFunctions.js</a>,
-				 <a href="base_generalFunctions.js.html#sunlight-1-line-73">line 73</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
+        <th>Type</th>
 
         
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
             
-<hr>
-<dt>
-    <h4 class="name" id=".shallowCopy"><span class="type-signature">&lt;static> </span>shallowCopy()</h4>
-    
-    
-</dt>
-<dd>
+                <td class="name"><code>strId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The string id of the item</p></td>
+        </tr>
 
     
-    <div class="description">
-        <p>TODO: documentation</p>
-    </div>
-    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>TODO</p></td>
+        </tr>
 
     
+    </tbody>
+</table>
 
-    
-
-    
     
 
     
@@ -1207,7 +1229,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="base_generalFunctions.js.html">base/generalFunctions.js</a>,
-				 <a href="base_generalFunctions.js.html#sunlight-1-line-128">line 128</a>
+				 <a href="base_generalFunctions.js.html#sunlight-1-line-83">line 83</a>
 			</li>
 		</ul>
 	</dd>
@@ -1295,7 +1317,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="base_generalFunctions.js.html">base/generalFunctions.js</a>,
-				 <a href="base_generalFunctions.js.html#sunlight-1-line-110">line 110</a>
+				 <a href="base_generalFunctions.js.html#sunlight-1-line-126">line 126</a>
 			</li>
 		</ul>
 	</dd>
@@ -1374,7 +1396,7 @@
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a>
 	
-		on Tue Apr 7th 2020
+		on Mon Apr 13th 2020
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>
